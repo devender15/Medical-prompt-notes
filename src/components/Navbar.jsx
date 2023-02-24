@@ -32,25 +32,19 @@ const Navbar = ({ isLoggedin }) => {
                 <div className="hidden w-full sm:ml-6 sm:block">
                   <div className="flex w-full space-x-4 justify-between items-center">
                     <div className="flex items-center space-x-2">
-                      <button className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                        <Link to="/" className="text-white hover:text-white">
-                          Home
-                        </Link>
-                      </button>
-                      <button
-                        className="inline-flex justify-center rounded-md border border-transparent bg-yellow-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
-                        disabled={!isLoggedin}
+                      <Link
+                        to="/"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hover:text-white"
                       >
-                        <Link
-                          to="/view-notes"
-                          className="text-white hover:text-white"
-                          onClick={
-                            !isLoggedin ? (e) => e.preventDefault() : null
-                          }
-                        >
-                          View Notes
-                        </Link>
-                      </button>
+                        Home
+                      </Link>
+                      <Link
+                        to="/view-notes"
+                        className="inline-flex justify-center rounded-md border border-transparent bg-yellow-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 hover:text-white"
+                        onClick={!isLoggedin ? (e) => e.preventDefault() : null}
+                      >
+                        View Notes
+                      </Link>
                     </div>
 
                     {isLoggedin ? (
