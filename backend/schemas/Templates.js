@@ -5,24 +5,35 @@ export default {
   fields: [
     {
       name: 'name',
-      title: 'Name',
+      title: 'Template name',
       type: 'string',
     },
     {
-        name: 'text',
-        title: 'Note text',
+        name: 'fields',
+        title: 'Fields',
         type: 'array',
-        of: [{type: 'string'}],
-    },
-    {
-      name: 'prompts',
-      title: 'Prompts',
-      type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'prompt' }]}],
-      options: {
-        getOptionLabel: (prompt) => prompt.title,
-        getOptionLabel: (prompt) => prompt._id,
-      },
+        of: [
+          {
+            type: 'object',
+            fields: [
+              {
+                name: 'name',
+                title: 'Name',
+                type: 'string',
+              },
+              {
+                name: 'label',
+                title: 'Label',
+                type: 'string',
+              },
+              {
+                name: 'type',
+                title: 'Field Type',
+                type: 'string',
+              },
+            ]
+          }
+        ],
     },
   ],
 }
