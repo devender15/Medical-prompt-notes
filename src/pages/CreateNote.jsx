@@ -24,7 +24,7 @@ const CreateNote = () => {
 
         <main className="my-2 p-2 bg-gray-100">
           <div className="text-black">
-            <h2 className="text-lg">Selected a note template</h2>
+            <h2 className="text-lg">Select a note template</h2>
 
             <Dropdown
               title="Templates"
