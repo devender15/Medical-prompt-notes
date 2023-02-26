@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { Link } from "react-router-dom";
 
 import { Disclosure, Menu, Transition } from "@headlessui/react";
@@ -6,11 +6,15 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 import signOutUser from "../utils/signout";
 
+import { TemplateDetailsContext } from "../context/templateDetails";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Navbar = ({ isLoggedin }) => {
+const Navbar = () => {
+  const template = useContext(TemplateDetailsContext);
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -41,13 +45,12 @@ const Navbar = ({ isLoggedin }) => {
                       <Link
                         to="/view-notes"
                         className="inline-flex justify-center rounded-md border border-transparent bg-yellow-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 hover:text-white"
-                        onClick={!isLoggedin ? (e) => e.preventDefault() : null}
                       >
                         View Notes
                       </Link>
                     </div>
 
-                    {isLoggedin ? (
+                    {template?.templateDetails ? (
                       <button
                         className="inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                         onClick={signOutUser}

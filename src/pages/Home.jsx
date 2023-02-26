@@ -1,19 +1,33 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect, useContext } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 import { Notes, Note, CreateNote } from "./";
 
-import TemplateDetails from "../context/templateDetails";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebase";
+
+import { TemplateDetailsContext } from "../context/templateDetails";
 
 const Home = () => {
+  const template = useContext(TemplateDetailsContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        template?.setTemplateDetails(true);
+      } else {
+        template?.setTemplateDetails(false);
+        navigate("/login");
+      }
+    });
+  }, []);
+
   return (
-    <TemplateDetails>
-      <Routes>
-        <Route path="/" element={<CreateNote />} />
-        <Route path="/view-notes" element={<Notes />} />
-        <Route path="/note/:slug" element={<Note />} />
-      </Routes>
-    </TemplateDetails>
+    <Routes>
+      <Route path="/" element={<CreateNote />} />
+      <Route path="/view-notes" element={<Notes />} />
+      <Route path="/note/:slug" element={<Note />} />
+    </Routes>
   );
 };
 

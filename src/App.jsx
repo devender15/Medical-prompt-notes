@@ -1,39 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./App.css";
 
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
-
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { Home, Login, Register } from "./pages/";
 import { Navbar } from "./components";
 
+import TemplateDetails from "./context/templateDetails";
+
 function App() {
-  const navigate = useNavigate();
-  const [isLoggedin, setIsLoggedin] = useState(false);
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsLoggedin(true);
-      } else {
-        console.log(user);
-        setIsLoggedin(false);
-        navigate("/login");
-      }
-    });
-  }, [auth]);
-
   return (
-    <>
-      <Navbar isLoggedin={isLoggedin} />
+    <TemplateDetails>
+      <Navbar />
       <Routes>
         <Route exact path="/*" element={<Home />} />
         <Route exact path="/login" element={<Login />} />
         <Route exact path="/register" element={<Register />} />
       </Routes>
-    </>
+    </TemplateDetails>
   );
 }
 
