@@ -2,7 +2,7 @@ import React, { Fragment, useState, memo, useContext } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
-import { Modal } from "./";
+import { Modal } from ".";
 
 import { TemplateDetailsContext } from "../context/templateDetails";
 
@@ -10,14 +10,17 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-const Dropdown = ({ title, items, type }) => {
+const Dropdown = ({ title, items, type, selectVal }) => {
   const [openModal, setOpenModal] = useState(false);
   const detailsTemplate = useContext(TemplateDetailsContext);
 
   const selectOption = (e) => {
     detailsTemplate?.setTemplateDetails({
       ...detailsTemplate?.templateDetails,
-      prompts: [...detailsTemplate?.templateDetails?.prompts, e.target.textContent],
+      prompts: [
+        ...detailsTemplate?.templateDetails?.prompts,
+        e.target.textContent,
+      ],
     });
   };
 
@@ -57,7 +60,11 @@ const Dropdown = ({ title, items, type }) => {
                   <Menu.Item key={item?._id}>
                     {({ active }) => (
                       <p
-                        onClick={type === "prompts" ? e => selectOption(e) : null}
+                        onClick={
+                          type === "prompts"
+                            ? (e) => selectOption(e)
+                            : () => selectVal(item)
+                        }
                         className={classNames(
                           active
                             ? "bg-gray-100 text-gray-900 cursor-pointer"
