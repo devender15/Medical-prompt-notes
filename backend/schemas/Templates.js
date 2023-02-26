@@ -11,7 +11,8 @@ export default {
     {
         name: 'text',
         title: 'Note text',
-        type: 'text',
+        type: 'array',
+        of: [{type: 'string'}],
     },
     {
       name: 'prompts',
