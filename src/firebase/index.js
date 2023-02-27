@@ -2,13 +2,14 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDPmRpRI7hwW4P287BFZ8SyN0iJZp8Q6WY",
-  authDomain: "medical-notes-app-ba9a5.firebaseapp.com",
-  projectId: "medical-notes-app-ba9a5",
-  storageBucket: "medical-notes-app-ba9a5.appspot.com",
-  messagingSenderId: "239544613447",
-  appId: "1:239544613447:web:ba41a8264461a043674f62"
+  apiKey: import.meta.env.VITE_SOME_KEY_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_SOME_KEY_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_SOME_KEY_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_SOME_KEY_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_SOME_KEY_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_SOME_KEY_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
