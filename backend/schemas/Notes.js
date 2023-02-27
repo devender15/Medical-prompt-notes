@@ -9,6 +9,12 @@ export default {
       type: 'string',
     },
     {
+      name: 'template',
+      title: 'Template',
+      type: 'reference',
+      to: [{ type: 'templates' }],
+    },
+    {
       name: 'note',
       title: 'Description',
       type: 'text',
@@ -22,6 +28,11 @@ export default {
       name: 'slug',
       title: 'Slug',
       type: 'string',
+    },
+    {
+      name: 'structure',
+      title: 'Structure',
+      type: 'text',
     },
     {
       name: 'date',
