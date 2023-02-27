@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
@@ -97,11 +98,12 @@ const Notes = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openPopup, setOpenPopup] = useState(false);
+  const navigate = useNavigate();
 
   const handleDeleteNotes = async () => {
     client
       .delete({ query: '*[_type == "notes"]{...}' })
-      .then((res) => console.log(res))
+      .then(() => navigate("/"))
       .catch((err) => console.error(err));
   };
 
