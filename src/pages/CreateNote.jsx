@@ -2,8 +2,12 @@ import React, { useState, useEffect } from "react";
 
 import client from "../utils/client";
 import slugify from "../utils/slugify";
+import notify from "../utils/toast";
 
 import { Dropdown } from "../components";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateNote = () => {
   const [templates, setTemplates] = useState([]);
@@ -24,7 +28,7 @@ const CreateNote = () => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
-  const handleCreateNote = async (e) => {
+  const handleCreateNote = (e) => {
     e.preventDefault();
 
     // Generate the note based on the selected template and user input
@@ -36,16 +40,22 @@ const CreateNote = () => {
 
     setFinalNote(note);
     // pushing data to our db
-    const resp = await client.create({
-      _type: "notes",
-      title: formData["note-title"],
-      note: note,
-      patient: formData?.pname,
-      slug: slugify(formData["note-title"] || ""),
-      date: new Date().toISOString(),
-    });
-
-    console.log(resp);
+    client
+      .create({
+        _type: "notes",
+        title: formData["note-title"],
+        note: note,
+        patient: formData?.pname,
+        template: {
+          _ref: selectedTemplate?._id,
+          _type: "reference",
+        },
+        structure: JSON.stringify(formData),
+        slug: slugify(formData["note-title"] || ""),
+        date: new Date().toISOString(),
+      })
+      .then(() => notify(toast, "Note created successfully!", "success"))
+      .catch(() => notify(toast, "Something went wrong!", "error"));
   };
 
   return (
@@ -164,6 +174,7 @@ const CreateNote = () => {
           </>
         ) : null}
       </main>
+      <ToastContainer />
     </div>
   );
 };
