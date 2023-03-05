@@ -139,6 +139,18 @@ const Note = () => {
                       className="mt-1 bg-white p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       required
                     />
+                  ) : field?.type === "h1" ? (
+                    <>
+                      <div className="w-full text-left">
+                        <h1
+                          id={field?.name}
+                          name={field?.name}
+                          className="text-xl md:text-2xl text-black"
+                        >
+                          {field?.label}
+                        </h1>
+                      </div>
+                    </>
                   ) : (
                     <input
                       type={field.type}

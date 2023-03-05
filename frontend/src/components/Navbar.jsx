@@ -141,7 +141,20 @@ const Navbar = () => {
           </div>
 
           <Disclosure.Panel className="sm:hidden">
-            <div className="space-y-1 px-2 pt-2 pb-3"></div>
+            <div className="flex flex-col space-y-2 px-2 pt-2 pb-3">
+              <Link
+                to="/"
+                className="inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 hover:text-white"
+              >
+                Home
+              </Link>
+              <Link
+                to="/view-notes"
+                className="inline-flex justify-center rounded-md border border-transparent bg-yellow-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 hover:text-white"
+              >
+                View Notes
+              </Link>
+            </div>
           </Disclosure.Panel>
         </>
       )}

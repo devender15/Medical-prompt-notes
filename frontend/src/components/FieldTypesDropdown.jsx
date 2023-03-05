@@ -2,11 +2,11 @@ import React, { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
+import fields from "../constants/FieldTypes";
+
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
-
-const fieldTypes = ["text", "textarea", "number", "tel", "password"];
 
 const FieldTypesDropdown = ({ values, setValues }) => {
   return (
@@ -29,7 +29,7 @@ const FieldTypesDropdown = ({ values, setValues }) => {
       >
         <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="py-1">
-            {fieldTypes?.map((type) => {
+            {fields?.map((type) => {
               return (
                 <Menu.Item key={type}>
                   {({ active }) => (

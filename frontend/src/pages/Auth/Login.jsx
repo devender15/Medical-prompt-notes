@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import notify from "../../utils/toast";
+
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../firebase";
 
@@ -22,7 +27,7 @@ const Login = () => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        notify(toast, errorMessage, "error");
       });
   };
 
@@ -103,6 +108,7 @@ const Login = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

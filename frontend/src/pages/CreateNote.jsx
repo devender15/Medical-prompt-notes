@@ -59,12 +59,12 @@ const CreateNote = () => {
   };
 
   return (
-    <div className="mt-10 p-2">
+    <div className="mt-10">
       <div className="my-4">
         <h1 className="text-black text-3xl text-center">Create a new note</h1>
       </div>
 
-      <main className="my-2 p-2 bg-gray-100">
+      <main className="my-2 bg-gray-100">
         <div className="text-black">
           <h2 className="text-lg">Select a note template</h2>
 
@@ -78,12 +78,12 @@ const CreateNote = () => {
         <hr />
 
         {Object.keys(selectedTemplate)?.length > 0 ? (
-          <section className="mt-6 text-black">
+          <section className="mt-6 text-black w-full">
             <h3 className="text-lg font-semibold capitalize">
               {selectedTemplate?.name}
             </h3>
 
-            <div className="my-4 p-2 rounded-md bg-white shadow-md w-1/2 mx-auto">
+            <div className="my-4 p-2 rounded-md bg-white shadow-md w-full md:w-1/2 mx-auto">
               <form className="mt-8 space-y-6" onSubmit={handleCreateNote}>
                 <div>
                   <label htmlFor="note-title" className="sr-only">
@@ -130,6 +130,12 @@ const CreateNote = () => {
                         className="mt-1 bg-white p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                         required
                       />
+                    ) : field?.type === "h1" ? (
+                      <>
+                        <div className="w-full text-left">
+                          <h1 id={field?.name} name={field?.name} className="text-xl md:text-2xl">{field?.label}</h1>
+                        </div>
+                      </>
                     ) : (
                       <input
                         type={field.type}
