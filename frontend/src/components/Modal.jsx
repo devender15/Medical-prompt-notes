@@ -15,6 +15,8 @@ const Modal = ({ open, setOpen, heading, type }) => {
   const [showFieldModal, setShowFieldModal] = useState(false);
   const [fields, setFields] = useState([]);
   const [templateTitle, setTemplateTitle] = useState("");
+  const [editable, setEditable] = useState(false);
+  const [editableField, setEditableField] = useState(null);
 
   const createTemplate = async () => {
     const resp = await client.create({
@@ -24,7 +26,6 @@ const Modal = ({ open, setOpen, heading, type }) => {
     });
     notify(toast, "Template created !", "success");
     setOpen(false);
-    console.log(resp);
   };
 
   const handleRemoveField = (label) => {
@@ -34,12 +35,25 @@ const Modal = ({ open, setOpen, heading, type }) => {
     });
   };
 
+  const handleEditField = (name) => {
+    setEditableField(() => {
+      const idx = fields?.findIndex(field => field.name === name);
+      return idx;
+    })
+    setEditable(true);
+    setShowFieldModal(true);
+  }
+
   return (
     <>
       <FieldModal
         open={showFieldModal}
         setOpen={setShowFieldModal}
+        editableField={editableField}
+        fields={fields}
+        // setEditableField={setEditableField}
         setFields={setFields}
+        editable={editable}
       />
       <Transition.Root show={open} as={Fragment}>
         <Dialog
@@ -121,9 +135,9 @@ const Modal = ({ open, setOpen, heading, type }) => {
                                     Fields
                                   </label>
                                   <div className="relative mt-4 rounded-md shadow-sm w-full">
-                                    {fields?.map((field) => {
+                                    {fields?.map((field, idx) => {
                                       return (
-                                        <div className="flex items-center space-x-4">
+                                        <div key={idx} className="flex items-center space-x-4">
                                           <p className="text-black uppercase font-semibold my-1">
                                             {" "}
                                             🔰 {field?.label} - {field?.type}
@@ -133,6 +147,18 @@ const Modal = ({ open, setOpen, heading, type }) => {
                                             <button
                                               type="button"
                                               className="bg-transparent border-none p-0 text-blue-500 hover:text-blue-700 "
+                                              onClick={() =>
+                                                handleEditField(field?.label)
+                                              }
+                                            >
+                                              Edit
+                                            </button>
+                                          </div>
+
+                                          <div>
+                                            <button
+                                              type="button"
+                                              className="bg-transparent border-none p-0 text-red-500 hover:text-red-700 "
                                               onClick={() =>
                                                 handleRemoveField(field?.label)
                                               }
@@ -161,8 +187,9 @@ const Modal = ({ open, setOpen, heading, type }) => {
                   <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button
                       type="button"
-                      className="inline-flex w-full justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                      className="inline-flex w-full justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:bg-gray-400"
                       onClick={createTemplate}
+                      disabled={!templateTitle || fields?.length === 0}
                     >
                       Create
                     </button>

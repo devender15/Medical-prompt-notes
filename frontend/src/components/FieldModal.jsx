@@ -4,9 +4,9 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 import { FieldTypesDropdown } from "./";
 
-const FieldModal = ({ open, setOpen, setFields }) => {
+const FieldModal = ({ open, setOpen, setFields, editable, editableField, fields }) => {
   const cancelButtonRef = useRef(null);
-  const [values, setValues] = useState({});
+  const [values, setValues] = useState(editable ? {...fields[editableField]} : {});
 
   const handleInputChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value });
@@ -15,6 +15,10 @@ const FieldModal = ({ open, setOpen, setFields }) => {
   const addFieldToArray = () => {
     setFields((prev) => {
       let arr = [...prev];
+      if(editable) {
+        arr.splice(editableField, 1, values);
+        return arr;
+      }
       arr.push(values);
       return arr;
     });
@@ -67,7 +71,7 @@ const FieldModal = ({ open, setOpen, setFields }) => {
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        New field
+                        {editable ? "Edit field" : "New field"} 
                       </Dialog.Title>
                       <div className="mt-2">
                         <form className="flex flex-col space-y-2 my-3">
@@ -80,9 +84,9 @@ const FieldModal = ({ open, setOpen, setFields }) => {
                               id="name"
                               name="name"
                               placeholder="Name"
-                              value={values["title"]}
+                              value={editable ? values["name"] : values["title"]}
                               onChange={handleInputChange}
-                              required
+                              required  
                               className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                             />
                           </div>
@@ -96,7 +100,7 @@ const FieldModal = ({ open, setOpen, setFields }) => {
                               id="label"
                               name="label"
                               placeholder="Field title"
-                              value={values["title"]}
+                              value={editable ? values["label"] : values["title"]}
                               onChange={handleInputChange}
                               required
                               className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
@@ -140,4 +144,4 @@ const FieldModal = ({ open, setOpen, setFields }) => {
   );
 };
 
-export default FieldModal;
+export default React.memo(FieldModal);
