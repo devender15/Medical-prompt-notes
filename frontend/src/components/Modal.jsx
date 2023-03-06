@@ -2,6 +2,10 @@ import React, { Fragment, useRef, useState, memo } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import notify from "../utils/toast";
 import client from "../utils/client";
 
 import { FieldModal } from "./";
@@ -18,9 +22,8 @@ const Modal = ({ open, setOpen, heading, type }) => {
       name: templateTitle,
       fields: fields,
     });
-
+    notify(toast, "Template created !", "success");
     setOpen(false);
-
     console.log(resp);
   };
 
@@ -158,6 +161,7 @@ const Modal = ({ open, setOpen, heading, type }) => {
           </div>
         </Dialog>
       </Transition.Root>
+      <ToastContainer />
     </>
   );
 };
