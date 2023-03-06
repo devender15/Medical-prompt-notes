@@ -27,6 +27,13 @@ const Modal = ({ open, setOpen, heading, type }) => {
     console.log(resp);
   };
 
+  const handleRemoveField = (label) => {
+    setFields((prev) => {
+      const newArr = prev?.filter((field) => field?.label !== label);
+      return newArr;
+    });
+  };
+
   return (
     <>
       <FieldModal
@@ -116,10 +123,24 @@ const Modal = ({ open, setOpen, heading, type }) => {
                                   <div className="relative mt-4 rounded-md shadow-sm w-full">
                                     {fields?.map((field) => {
                                       return (
-                                        <p className="text-black uppercase font-semibold my-1">
-                                          {" "}
-                                          🔰 {field?.label} - {field?.type}
-                                        </p>
+                                        <div className="flex items-center space-x-4">
+                                          <p className="text-black uppercase font-semibold my-1">
+                                            {" "}
+                                            🔰 {field?.label} - {field?.type}
+                                          </p>
+
+                                          <div>
+                                            <button
+                                              type="button"
+                                              className="bg-transparent border-none p-0 text-blue-500 hover:text-blue-700 "
+                                              onClick={() =>
+                                                handleRemoveField(field?.label)
+                                              }
+                                            >
+                                              Remove
+                                            </button>
+                                          </div>
+                                        </div>
                                       );
                                     })}
                                   </div>
