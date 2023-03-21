@@ -15,11 +15,6 @@ export default {
       to: [{ type: 'templates' }],
     },
     {
-      name: 'note',
-      title: 'Description',
-      type: 'text',
-    },
-    {
       name: 'patient',
       title: 'Patient Name',
       type: 'string',
