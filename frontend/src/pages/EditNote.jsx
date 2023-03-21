@@ -54,19 +54,11 @@ const Note = () => {
   const handleUpdateNote = (e) => {
     e.preventDefault();
 
-    // Generate the note based on the selected template and user input
-    const finalnote = `--- ${formData["note-title"]} ---\n
-        ${template?.fields
-          .map((field) => `${field.label}: ${formData[field.name]}`)
-          .join("\n")}
-        `;
-
-    let finalNote = {
+    const finalNote = {
       structure: JSON.stringify(formData),
       patient: formData["pname"],
       title: formData["note-title"],
       template: { _ref: note?.template?._ref, _type: "reference" },
-      note: finalnote,
       slug: slugify(formData["note-title"]),
     };
 
@@ -124,41 +116,21 @@ const Note = () => {
                   className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                 />
               </div>
-              {template?.fields?.map((field) => (
-                <div key={field.name}>
-                  <label htmlFor={field.name} className="sr-only text-black">
-                    {field.label}:
+              {template?.bodyText?.map((item) => (
+                <div key={item.name}>
+                  <label htmlFor={item.name} className="sr-only text-black">
+                    {item.label}:
                   </label>
-                  {field.type === "textarea" ? (
-                    <textarea
-                      id={field.name}
-                      name={field.name}
-                      value={formData[field.name] || ""}
-                      onChange={handleInputChange}
-                      placeholder={field.label}
-                      className="mt-1 bg-white p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      required
-                    />
-                  ) : field?.type === "h1" ? (
-                    <>
-                      <div className="w-full text-left">
-                        <h1
-                          id={field?.name}
-                          name={field?.name}
-                          className="text-xl md:text-2xl text-black"
-                        >
-                          {field?.label}
-                        </h1>
-                      </div>
-                    </>
-                  ) : (
+                  {!item?.isField ? (
+                    <p className="text-black text-lg text-left">{item?.text}</p>
+                  ): (
                     <input
-                      type={field.type}
-                      id={field.name}
-                      name={field.name}
-                      value={formData[field.name] || ""}
+                      type={item.type}
+                      id={item.name}
+                      name={item.name}
+                      value={formData[item.name] || ""}
                       onChange={handleInputChange}
-                      placeholder={field.label}
+                      placeholder={item.label}
                       required
                       className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                     />

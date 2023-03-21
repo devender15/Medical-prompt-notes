@@ -151,7 +151,7 @@ const Notes = () => {
               <Card
                 key={note?._id}
                 title={note?.title}
-                content={note?.note}
+                content={JSON.parse(note?.structure)}
                 slug={note?.slug}
               />
             );

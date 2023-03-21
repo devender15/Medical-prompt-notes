@@ -13,7 +13,7 @@ const CreateNote = () => {
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState({});
   const [formData, setFormData] = useState({});
-  const [finalNote, setFinalNote] = useState("");
+  const [showNote, setShowNote] = useState(false);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -30,21 +30,11 @@ const CreateNote = () => {
 
   const handleCreateNote = (e) => {
     e.preventDefault();
-
-    // Generate the note based on the selected template and user input
-    const note = `--- ${formData["note-title"]} ---\n
-        ${selectedTemplate?.fields
-          .map((field) => `${field.label}: ${formData[field.name]}`)
-          .join("\n")}
-        `;
-
-    setFinalNote(note);
     // pushing data to our db
     client
       .create({
         _type: "notes",
         title: formData["note-title"],
-        note: note,
         patient: formData?.pname,
         template: {
           _ref: selectedTemplate?._id,
@@ -56,6 +46,7 @@ const CreateNote = () => {
       })
       .then(() => notify(toast, "Note created successfully!", "success"))
       .catch(() => notify(toast, "Something went wrong!", "error"));
+    setShowNote(true);
   };
 
   return (
@@ -84,7 +75,7 @@ const CreateNote = () => {
             </h3>
 
             <div className="my-4 p-2 rounded-md bg-white shadow-md w-full md:w-1/2 mx-auto">
-              <form className="mt-8 space-y-6" onSubmit={handleCreateNote}>
+              <form className="mt-8 space-y-2" onSubmit={handleCreateNote}>
                 <div>
                   <label htmlFor="note-title" className="sr-only">
                     Note Title
@@ -115,35 +106,23 @@ const CreateNote = () => {
                     className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                   />
                 </div>
-                {selectedTemplate?.fields?.map((field) => (
-                  <div key={field.name}>
-                    <label htmlFor={field.name} className="sr-only text-black">
-                      {field.label}:
+                {selectedTemplate?.bodyText?.map((item) => (
+                  <div key={item._id}>
+                    <label htmlFor={item.name} className="sr-only text-black">
+                      {item.label}:
                     </label>
-                    {field.type === "textarea" ? (
-                      <textarea
-                        id={field.name}
-                        name={field.name}
-                        value={formData[field.name] || ""}
-                        onChange={handleInputChange}
-                        placeholder={field.label}
-                        className="mt-1 bg-white p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                        required
-                      />
-                    ) : field?.type === "h1" ? (
-                      <>
-                        <div className="w-full text-left">
-                          <h1 id={field?.name} name={field?.name} className="text-xl md:text-2xl">{field?.label}</h1>
-                        </div>
-                      </>
+                    {!item?.isField ? (
+                      <p className="text-black text-lg text-left">
+                        {item?.text}
+                      </p>
                     ) : (
                       <input
-                        type={field.type}
-                        id={field.name}
-                        name={field.name}
-                        value={formData[field.name] || ""}
+                        type={item.type}
+                        id={item.name}
+                        name={item.name}
+                        value={formData[item.name] || ""}
                         onChange={handleInputChange}
-                        placeholder={field.label}
+                        placeholder={item.label}
                         required
                         className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                       />
@@ -167,14 +146,28 @@ const CreateNote = () => {
           </p>
         )}
 
-        {finalNote?.length > 0 ? (
+        {showNote ? (
           <>
             <hr />
             <section className="my-4 p-2 text-black">
               <h2 className="text-3xl text-center">Final note</h2>
 
-              <div className="bg-white p-2 rounded-md break-words w-1/2 mx-auto my-2">
-                <p>{finalNote}</p>
+              <div className="bg-white p-2 rounded-md break-words w-1/2 mx-auto my-2  space-y-2">
+                {Object.keys(formData)?.map((line, idx) =>
+                  line === "note-title" ? (
+                    <p key={idx}>---- {formData[line]} ----</p>
+                  ) : (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-start w-1/2 mx-auto mt-4"
+                    >
+                      <p className="font-semibold mr-4 capitalize">
+                        {line === "pname" ? "Patient's name" : line} :{" "}
+                      </p>
+                      <span className="capitalize">{formData[line]}</span>
+                    </div>
+                  )
+                )}
               </div>
             </section>
           </>
