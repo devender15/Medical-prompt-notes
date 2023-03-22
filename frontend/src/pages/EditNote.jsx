@@ -84,8 +84,8 @@ const Note = () => {
         <section className="mt-6">
           <h1 className="text-center text-black text-3xl">Edit your note</h1>
 
-          <div className="my-4 p-2 rounded-md bg-white shadow-md w-1/2 mx-auto">
-            <form className="mt-8 space-y-6" onSubmit={handleUpdateNote}>
+          <div className="my-4 p-2 rounded-md bg-white shadow-md w-full md:w-1/2 mx-auto">
+            <form className="mt-8 space-y-2" onSubmit={handleUpdateNote}>
               <div>
                 <label htmlFor="note-title" className="sr-only">
                   Note Title

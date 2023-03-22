@@ -152,7 +152,7 @@ const CreateNote = () => {
             <section className="my-4 p-2 text-black">
               <h2 className="text-3xl text-center">Final note</h2>
 
-              <div className="bg-white p-2 rounded-md break-words w-1/2 mx-auto my-2  space-y-2">
+              <div className="bg-white p-2 rounded-md break-words w-full md:w-1/2 mx-auto my-2  space-y-2">
                 {Object.keys(formData)?.map((line, idx) =>
                   line === "note-title" ? (
                     <p key={idx}>---- {formData[line]} ----</p>
