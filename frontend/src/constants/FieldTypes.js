@@ -1,3 +1,3 @@
-const fields = ["text", "textarea", "number", "tel", "password", "radio"];
+const fields = ["text", "number", "radio"];
 
 export default fields;
