@@ -146,7 +146,7 @@ const Notes = () => {
         )}
 
         <section className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
-          {notes?.reverse()?.map((note) => {
+          {notes?.length > 0 ? notes?.reverse()?.map((note) => {
             return (
               <Card
                 key={note?._id}
@@ -155,7 +155,11 @@ const Notes = () => {
                 slug={note?.slug}
               />
             );
-          })}
+          }) : (
+            <div className="col-span-4 py-16">
+              <p className="text-black text-center text-xl md:text-2xl">No notes found!</p>
+            </div>
+          )}
         </section>
       </div>
     </>
