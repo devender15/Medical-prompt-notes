@@ -4,18 +4,33 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 import { FieldTypesDropdown } from "./";
 
-const FieldModal = ({ open, setOpen, setFields, editable, editableField, fields }) => {
+const FieldModal = ({
+  open,
+  setOpen,
+  setFields,
+  editable,
+  editableField,
+  fields,
+}) => {
   const cancelButtonRef = useRef(null);
-  const [values, setValues] = useState(editable ? {...fields[editableField]} : {});
+  const [values, setValues] = useState(
+    editable ? { ...fields[editableField] } : {}
+  );
+  const [options, setOptions] = useState([]);
 
   const handleInputChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value });
+    setValues({
+      ...values,
+      [e.target.name]: e.target.value,
+      isField: true,
+      text: "",
+    });
   };
 
   const addFieldToArray = () => {
     setFields((prev) => {
       let arr = [...prev];
-      if(editable) {
+      if (editable) {
         arr.splice(editableField, 1, values);
         return arr;
       }
@@ -57,7 +72,7 @@ const FieldModal = ({ open, setOpen, setFields, editable, editableField, fields 
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-scroll rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className="relative transform overflow-y-auto rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -71,10 +86,20 @@ const FieldModal = ({ open, setOpen, setFields, editable, editableField, fields 
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        {editable ? "Edit field" : "New field"} 
+                        {editable ? "Edit prompt" : "New prompt"}
                       </Dialog.Title>
                       <div className="mt-2">
                         <form className="flex flex-col space-y-2 my-3">
+                          <div className="flex space-x-4 items-center">
+                            <label htmlFor="" className="text-black">
+                              Field Type
+                            </label>
+                            <FieldTypesDropdown
+                              values={values}
+                              setValues={setValues}
+                            />
+                          </div>
+
                           <div>
                             <label htmlFor="name" className="sr-only">
                               Name
@@ -84,9 +109,11 @@ const FieldModal = ({ open, setOpen, setFields, editable, editableField, fields 
                               id="name"
                               name="name"
                               placeholder="Name"
-                              value={editable ? values["name"] : values["title"]}
+                              value={
+                                editable ? values["name"] : values["title"]
+                              }
                               onChange={handleInputChange}
-                              required  
+                              required
                               className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                             />
                           </div>
@@ -100,19 +127,55 @@ const FieldModal = ({ open, setOpen, setFields, editable, editableField, fields 
                               id="label"
                               name="label"
                               placeholder="Field title"
-                              value={editable ? values["label"] : values["title"]}
+                              value={
+                                editable ? values["label"] : values["title"]
+                              }
                               onChange={handleInputChange}
                               required
                               className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                             />
                           </div>
 
-                          <div className="flex space-x-4 items-center">
-                            <label htmlFor="" className="text-black">
-                              Field Type
-                            </label>
-                            <FieldTypesDropdown values={values} setValues={setValues} />
-                          </div>
+                          {/* {values?.type === "radio" ? (
+                            <>
+                            <div className="flex items-center space-x-2">
+                                <input
+                                  type="text"
+                                  id="option"
+                                  name="option"
+                                  placeholder="Option"
+                                  value={
+                                    editable ? values["label"] : values["title"]
+                                  }
+                                  onChange={handleInputChange}
+                                  required
+                                  className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                />
+
+                                <button className="px-2 py-1 bg-yellow-300 text-white">Add</button>
+                              </div>
+
+                              <div>
+                                {options?.map((option, idx) => (
+                                  <input
+                                    type="text"
+                                    key={idx}
+                                    id={`option${idx}`}
+                                    name={`option${idx}`}
+                                    placeholder={`Option ${idx + 1}`}
+                                    value={
+                                      editable
+                                        ? values["label"]
+                                        : option?.value
+                                    }
+                                    onChange={(e) => setOptions([...options, { name: 'option', value: e.target.value }])}
+                                    required
+                                    className="bg-white capitalize relative block w-full appearance-none rounded-none rounded-b-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                                  />
+                                ))}
+                              </div>
+                            </>
+                          ) : null} */}
                         </form>
                       </div>
                     </div>

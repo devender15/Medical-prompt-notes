@@ -129,7 +129,7 @@ const Notes = () => {
         setOpen={setOpenPopup}
         handleDeleteNotes={handleDeleteNotes}
       />
-      <div>
+      <div className="px-10">
         <div className="absolute top-1/2 left-1/2">{loading && <Loader />}</div>
 
         <h1 className="text-black text-center my-2 font-semibold">All notes</h1>

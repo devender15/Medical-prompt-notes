@@ -16,7 +16,7 @@ const Navbar = () => {
   const template = useContext(TemplateDetailsContext);
 
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-gray-800 sticky top-0">
       {({ open }) => (
         <>
           <div className="max-w-full px-2">

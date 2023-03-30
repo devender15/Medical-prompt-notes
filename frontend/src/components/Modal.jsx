@@ -1,6 +1,7 @@
-import React, { Fragment, useRef, useState, memo } from "react";
+import React, { Fragment, useRef, useState, memo, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
+import uuid from "react-uuid";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,32 +18,77 @@ const Modal = ({ open, setOpen, heading, type }) => {
   const [templateTitle, setTemplateTitle] = useState("");
   const [editable, setEditable] = useState(false);
   const [editableField, setEditableField] = useState(null);
+  const [bodyText, setBodyText] = useState([]);
+  const [currentKeyword, setCurrentKeyword] = useState("");
 
   const createTemplate = async () => {
     const resp = await client.create({
       _type: "templates",
       name: templateTitle,
-      fields: fields,
+      bodyText: bodyText,
     });
     notify(toast, "Template created !", "success");
+
+    // resetting all the values
+    setBodyText([]);
+    setTemplateTitle("");
     setOpen(false);
   };
 
-  const handleRemoveField = (label) => {
-    setFields((prev) => {
-      const newArr = prev?.filter((field) => field?.label !== label);
-      return newArr;
-    });
+  const handleRemoveField = (index) => {
+    const newKeywords = [...bodyText];
+    newKeywords.splice(index, 1);
+    setBodyText(newKeywords);
   };
 
   const handleEditField = (name) => {
     setEditableField(() => {
-      const idx = fields?.findIndex(field => field.name === name);
+      const idx = bodyText?.findIndex((field) => field?.name === name);
       return idx;
-    })
+    });
     setEditable(true);
     setShowFieldModal(true);
-  }
+  };
+
+  const handleInputChange = (event) => {
+    setCurrentKeyword(event.target.value);
+  };
+
+  const handleInputKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (currentKeyword.trim()) {
+        const newKeyword = {
+          _key: uuid(),
+          text: currentKeyword.trim(),
+          isField: false,
+          name: '',
+          label: '',
+          type: '',
+        };
+        if (newKeyword.text) {
+          setBodyText([...bodyText, newKeyword]);
+        }
+        setCurrentKeyword("");
+      }
+    }
+  };
+
+  useEffect(() => {
+    setBodyText((prev) => {
+      let newArray = [...prev];
+      const newField = fields.pop();
+      if (editable) {
+        const promptIndex = newArray?.findIndex(
+          (item) => item?._key === newField?._key
+        );
+        newArray?.splice(promptIndex, 1, newField);
+      } else {
+        if (newField) newArray.push({ ...newField, _key: uuid() });
+      }
+      return newArray;
+    });
+  }, [fields]);
 
   return (
     <>
@@ -132,51 +178,75 @@ const Modal = ({ open, setOpen, heading, type }) => {
                                     htmlFor="note-text"
                                     className="block text-sm font-medium text-gray-700"
                                   >
-                                    Fields
+                                    Note body
                                   </label>
+
                                   <div className="relative mt-4 rounded-md shadow-sm w-full">
-                                    {fields?.map((field, idx) => {
-                                      return (
-                                        <div key={idx} className="flex items-center space-x-4">
-                                          <p className="text-black uppercase font-semibold my-1">
-                                            {" "}
-                                            🔰 {field?.label} - {field?.type}
+                                    <div className="h-[20rem] overflow-y-auto cursor-text p-2 w-full bg-gray-200 rounded-md ">
+                                      {bodyText.map((item, idx) =>
+                                        item?.isField ? (
+                                          <div
+                                            key={idx}
+                                            className="flex items-center space-x-4"
+                                          >
+                                            <p className="text-black uppercase font-semibold">
+                                              {" "}
+                                               ~ {item?.label} ~
+                                            </p>
+
+                                            <div>
+                                              <button
+                                                type="button"
+                                                className="bg-transparent border-none outline-none p-0 text-blue-500 hover:text-blue-700 "
+                                                onClick={() =>
+                                                  handleEditField(item?.label)
+                                                }
+                                              >
+                                                Edit
+                                              </button>
+                                            </div>
+
+                                            <div>
+                                              <button
+                                                type="button"
+                                                className="bg-transparent border-none p-0 text-red-500 hover:text-red-700 "
+                                                onClick={() =>
+                                                  handleRemoveField(idx)
+                                                }
+                                              >
+                                                Remove
+                                              </button>
+                                            </div>
+                                          </div>
+                                        ) : (
+                                          <p
+                                            key={idx}
+                                            className="text-black p-2"
+                                          >
+                                            {item?.text}
                                           </p>
-
-                                          <div>
-                                            <button
-                                              type="button"
-                                              className="bg-transparent border-none p-0 text-blue-500 hover:text-blue-700 "
-                                              onClick={() =>
-                                                handleEditField(field?.label)
-                                              }
-                                            >
-                                              Edit
-                                            </button>
-                                          </div>
-
-                                          <div>
-                                            <button
-                                              type="button"
-                                              className="bg-transparent border-none p-0 text-red-500 hover:text-red-700 "
-                                              onClick={() =>
-                                                handleRemoveField(field?.label)
-                                              }
-                                            >
-                                              Remove
-                                            </button>
-                                          </div>
-                                        </div>
-                                      );
-                                    })}
+                                        )
+                                      )}
+                                      <input
+                                        type="text"
+                                        value={currentKeyword}
+                                        onChange={handleInputChange}
+                                        onKeyDown={handleInputKeyDown}
+                                        className="p-2 w-full bg-transparent border-none outline-none text-black"
+                                        placeholder="Write here"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </form>
                               <button
                                 className="mt-4 inline-flex w-full justify-center rounded-md border border-gray-300 bg-blue-600 text-white px-4 py-2 text-base font-medium shadow-sm hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-2  sm:w-auto sm:text-sm"
-                                onClick={() => setShowFieldModal(true)}
+                                onClick={() => {
+                                  setEditable(false);
+                                  setShowFieldModal(true);
+                                }}
                               >
-                                Add field
+                                Add prompt
                               </button>
                             </>
                           ) : null}
@@ -189,7 +259,7 @@ const Modal = ({ open, setOpen, heading, type }) => {
                       type="button"
                       className="inline-flex w-full justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm disabled:bg-gray-400"
                       onClick={createTemplate}
-                      disabled={!templateTitle || fields?.length === 0}
+                      disabled={!templateTitle || bodyText?.length === 0}
                     >
                       Create
                     </button>

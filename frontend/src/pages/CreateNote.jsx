@@ -4,7 +4,7 @@ import client from "../utils/client";
 import slugify from "../utils/slugify";
 import notify from "../utils/toast";
 
-import { Dropdown } from "../components";
+import { Dropdown, Template, NoteModal } from "../components";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,11 @@ const CreateNote = () => {
   const [selectedTemplate, setSelectedTemplate] = useState({});
   const [formData, setFormData] = useState({});
   const [showNote, setShowNote] = useState(false);
+  const [finalNoteObj, setFinalNoteObj] = useState({});
+  const [open, setOpen] = useState(false);
+
+  // new 
+  const [openTemplateModal, setOpenTemplateModal] = useState(false);
 
   useEffect(() => {
     const fetchTemplates = async () => {
@@ -49,26 +54,55 @@ const CreateNote = () => {
     setShowNote(true);
   };
 
+  const handleSelect = (template) => {
+    setOpen(true);
+    setSelectedTemplate(template);
+  }
+
   return (
     <div className="mt-10">
       <div className="my-4">
         <h1 className="text-black text-3xl text-center">Create a new note</h1>
       </div>
 
-      <main className="my-2 bg-gray-100">
+      <Template openTemplateModal={openTemplateModal} setOpenTemplateModal={setOpenTemplateModal} />
+
+      <main className="my-2 bg-gray-100 p-2 overflow-hidden">
         <div className="text-black">
           <h2 className="text-lg">Select a note template</h2>
 
-          <Dropdown
+          {/* <Dropdown
             title="Templates"
             items={templates}
             type="templates"
             selectVal={setSelectedTemplate}
-          />
+          /> */}
+
+          {/* <select className="select select-accent bg-white w-full max-w-xs">
+            <option disabled selected>
+              Select
+            </option>
+            {
+              templates?.map(option => (
+                <option value={option}>{option.name}</option>
+              ))
+            }
+            <option><button onClick={() => setOpenTemplateModal(true)}>New template</button></option>
+          </select> */}
+
+          <div className="w-full md:w-1/2 mt-4 mx-auto flex flex-col space-y-4 justify-center md:flex-row items-start md:space-x-4 md:space-y-0">
+            <div className="w-full md:basis-1/2 h-60 overflow-y-auto p-2 bg-white shadow-sm rounded-xl flex flex-col gap-4 text-left">
+              {templates?.map((template, index) => (
+                <p key={index} onClick={() => handleSelect(template)} className="w-full px-2 cursor-pointer hover:bg-gray-200">{template.name}</p>
+              ))}
+            </div>
+
+            <button className="btn btn-warning" onClick={() => setOpenTemplateModal(true)}>New template</button>
+          </div>
         </div>
         <hr />
 
-        {Object.keys(selectedTemplate)?.length > 0 ? (
+        {/* {Object.keys(selectedTemplate)?.length > 0 ? (
           <section className="mt-6 text-black w-full">
             <h3 className="text-lg font-semibold capitalize">
               {selectedTemplate?.name}
@@ -144,7 +178,7 @@ const CreateNote = () => {
           <p className="text-yellow-500 my-6 text-3xl font-semibold text-center">
             Select a template
           </p>
-        )}
+        )} */}
 
         {showNote ? (
           <>
@@ -153,9 +187,14 @@ const CreateNote = () => {
               <h2 className="text-3xl text-center">Final note</h2>
 
               <div className="bg-white p-2 rounded-md break-words w-full md:w-1/2 mx-auto my-2  space-y-2">
-                {Object.keys(formData)?.map((line, idx) =>
+                {/* <p> ---- {formData["note-title"]} ---- </p>
+                <p> Patient's name: {formData["pname"]} </p>
+                {Object.keys(finalNoteObj)?.map((content) => (
+                  <p>{content?.text}</p>
+                ))} */}
+                {/* {Object.keys(formData)?.map((line, idx) =>
                   line === "note-title" ? (
-                    <p key={idx}>---- {formData[line]} ----</p>
+                    <p key={idx}> ---- {formData[line]} ----</p>
                   ) : (
                     <div
                       key={idx}
@@ -167,13 +206,14 @@ const CreateNote = () => {
                       <span className="capitalize">{formData[line]}</span>
                     </div>
                   )
-                )}
+                )} */}
               </div>
             </section>
           </>
         ) : null}
       </main>
       <ToastContainer />
+      <NoteModal open={open} setOpen={setOpen} template={selectedTemplate} />
     </div>
   );
 };
